@@ -331,6 +331,24 @@ article h3 {
   margin: 1.25rem 0;
 }
 
+/*
+ * 段落の字下げ。本文に全角スペースを書く方法は、Astro が frontmatter を除いた
+ * 本文に trim() をかける（JS の trim は U+3000 も削る）ため 1 段落目だけ効かない。
+ * 直下の p だけを対象にして、引用・リスト内の段落は下げない。
+ */
+.post-body > p {
+  text-indent: 1em;
+}
+
+/*
+ * 別行立て数式も p として出力される。数式そのものと、そのあとに続く文は
+ * 段落の始まりではないので字下げしない。
+ */
+.post-body > p:has(.katex-display),
+.post-body > p:has(.katex-display) + p {
+  text-indent: 0;
+}
+
 .post-body h2 {
   margin-top: 2.5rem;
   font-size: 1.25rem;
@@ -377,6 +395,20 @@ article h3 {
   border-radius: 4px;
   font-size: 0.875rem;
   line-height: 1.6;
+}
+
+/* KaTeX の既定 1.21em は本文（明朝）の横に置くと大きく見えるので少し詰める */
+.post-body .katex {
+  font-size: 1.1em;
+}
+
+/* 横に長い数式はページごと横スクロールさせず、数式の中でスクロールさせる。
+   overflow-y: hidden は上下の余白ぶんで縦スクロールバーが出るのを防ぐ */
+.post-body .katex-display {
+  margin: 1.75rem 0;
+  padding: 0.25rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 /* 横に長い表はページごと横スクロールさせず、表の中でスクロールさせる */
