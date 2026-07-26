@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getWorks } from '../lib/works';
+
+const featured = await getWorks({ featuredOnly: true });
 ---
 
 <Layout title="Takumi">
@@ -20,7 +23,9 @@ import Layout from '../layouts/Layout.astro';
 	<section class="selected">
 		<h2>Selected Works</h2>
 		<ul>
-			<li><a href="/works#tabletennis">卓球試合映像におけるプレーシーン検出モデル</a></li>
+			{featured.map((work) => (
+				<li><a href={`/works#${work.id}`}>{work.data.title}</a></li>
+			))}
 		</ul>
 		<p class="more"><a href="/works">View all works →</a></p>
 	</section>

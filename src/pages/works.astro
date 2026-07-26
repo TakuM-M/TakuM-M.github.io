@@ -1,16 +1,71 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getEntry, render } from 'astro:content';
+import { getWorks } from '../lib/works';
+
+// 表示順は この配列の順序
+const SECTIONS = [
+  { category: 'publication', heading: 'Publications' },
+  { category: 'project', heading: 'Projects' },
+] as const;
+
+const works = await getWorks();
+
+const entries = await Promise.all(
+  works.map(async (work) => {
+    const ref = work.data.article;
+    const article = ref ? await getEntry(ref) : undefined;
+    if (ref && !article) {
+      throw new Error(
+        `works/${work.id}: article "${ref.id}" が blog コレクションに見つかりません`,
+      );
+    }
+    const { Content } = await render(work);
+    return { work, article, Content };
+  }),
+);
+
+const sections = SECTIONS.map((section) => ({
+  ...section,
+  items: entries.filter(({ work }) => work.data.category === section.category),
+})).filter(({ items }) => items.length > 0);
 ---
 
 <Layout title="Works | Takumi">
   <h1>Works</h1>
-  <article id="tabletennis">
-    <h2>卓球試合映像におけるプレーシーン検出モデルの作成</h2>
-    <p>YOLO+LSTMによる各フレームにおけるプレー中確率を検出し判定</p>
-    <p class="links">
-      <a href="/blog/2026-07-26-visuable-for-you">解説記事</a>
-      <a href="https://github.com/TakuM-M/Visuable_for_you_tabletennis" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://visualize-tt.com/" target="_blank" rel="noopener">Demo</a>
-    </p>
-  </article>
+  {sections.map(({ heading, items }) => (
+    <section class="works-section">
+      <h2>{heading}</h2>
+      {items.map(({ work, article, Content }) => (
+        <article id={work.id}>
+          <h3>{work.data.title}</h3>
+          <Content />
+          {work.data.publications.length > 0 && (
+            <ul class="pubs">
+              {work.data.publications.map((pub) => (
+                <li>
+                  <span class="pub-venue">{pub.venue}</span>
+                  <span class="pub-meta">{pub.date} · {pub.type}</span>
+                  {pub.authors && <span class="pub-authors">{pub.authors}</span>}
+                  {pub.href && (
+                    <a class="pub-url" href={pub.href} target="_blank" rel="noopener">
+                      {pub.linkLabel}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          {(article || work.data.links.length > 0) && (
+            <p class="links">
+              {article && <a href={`/blog/${article.id}`}>Blog</a>}
+              {work.data.links.map((link) => (
+                <a href={link.href} target="_blank" rel="noopener">{link.label}</a>
+              ))}
+            </p>
+          )}
+        </article>
+      ))}
+    </section>
+  ))}
 </Layout>

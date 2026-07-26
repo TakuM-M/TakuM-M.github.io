@@ -41,8 +41,23 @@ h2 {
   letter-spacing: -0.01em;
 }
 
-article > h2:first-child {
-  margin-top: 0;
+article h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.works-section {
+  margin-top: 3rem;
+}
+
+.works-section:first-of-type {
+  margin-top: 2rem;
+}
+
+.works-section > h2 {
+  margin: 0 0 1.5rem;
 }
 
 .profile {
@@ -65,11 +80,37 @@ article > h2:first-child {
   margin: 0;
 }
 
+.career {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem 2.5rem;
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+}
+
+.career li {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+.career .period {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  padding-top: 0.35rem;
+  white-space: nowrap;
+}
+
 .selected {
   margin-top: 3.5rem;
 }
 
-.selected h2 {
+.selected h2,
+.works-section > h2 {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 400;
@@ -88,6 +129,35 @@ article > h2:first-child {
 .selected .more {
   margin-top: 1rem;
   font-size: 0.875rem;
+}
+
+.pubs {
+  margin: 0.75rem 0 0;
+  list-style: none;
+  padding: 0;
+}
+
+.pubs li {
+  display: grid;
+  gap: 0.15rem;
+  justify-items: start;
+}
+
+.pubs li + li {
+  margin-top: 1.25rem;
+}
+
+.pubs .pub-meta {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--color-mute);
+}
+
+.pubs .pub-url {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
 }
 
 .links {
@@ -142,6 +212,35 @@ footer {
   border-top: 1px solid var(--color-subtle);
   font-size: 0.875rem;
   color: var(--color-mute);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+footer p {
+  margin: 0;
+}
+
+footer .social {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+footer .social a {
+  text-decoration: none;
+}
+
+footer .social a:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
 }
 
 time {
@@ -156,4 +255,18 @@ time {
     --page-padding-x: 1rem;
     --text-h1: 1.5rem;
   }
+
+  .career {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .career li {
+    row-gap: 0.15rem;
+  }
+
+  .career .period {
+    padding-top: 0;
+  }
+
 }
