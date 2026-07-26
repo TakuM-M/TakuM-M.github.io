@@ -10,6 +10,10 @@
   --text-h1: 2rem;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   max-width: 42rem;
   margin: 0 auto;
@@ -39,6 +43,59 @@ h2 {
 
 article > h2:first-child {
   margin-top: 0;
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem 2.5rem;
+  margin-top: 2rem;
+}
+
+.profile dt {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  padding-top: 0.35rem;
+}
+
+.profile dd {
+  margin: 0;
+}
+
+.selected {
+  margin-top: 3.5rem;
+}
+
+.selected h2 {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  margin: 0 0 0.75rem;
+}
+
+.selected ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected .more {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-mono);
+  margin-top: 1rem;
 }
 
 nav {
@@ -76,6 +133,7 @@ a:hover {
 article {
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--color-subtle);
+  scroll-margin-top: 2rem;
 }
 
 footer {

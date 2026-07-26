@@ -4,15 +4,24 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Takumi">
 	<h1>Takumi Miyazawa</h1>
-	<p>
-		Department of Computer Science, <br>
-		Graduate School of Systems Design,	<br>
-		Tokyo Metropolitan University
-	</p>
 
-	<h2>Interest
-		<li>Recommendation</li>
-		<li>Agent LLM</li>
-		<li>Computer Vision</li>
-	</h2>
+	<dl class="profile">
+		<dt>Affiliation</dt>
+		<dd>
+			Department of Computer Science,<br>
+			Graduate School of Systems Design,<br>
+			Tokyo Metropolitan University
+		</dd>
+
+		<dt>Interests</dt>
+		<dd>Recommendation Systems, LLM Agents, Computer Vision</dd>
+	</dl>
+
+	<section class="selected">
+		<h2>Selected Works</h2>
+		<ul>
+			<li><a href="/works#tabletennis">卓球試合映像におけるプレーシーン検出モデル</a></li>
+		</ul>
+		<p class="more"><a href="/works">View all works →</a></p>
+	</section>
 </Layout>
