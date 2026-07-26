@@ -10,7 +10,7 @@ developments:
 links:
   - label: GitHub
     href: https://github.com/TakuM-M/Visuable_for_you_tabletennis
-  - label: Demo
+  - label: Page
     href: https://visualize-tt.com/
 ---
 YOLO+LSTMによる検出パイプラインの構築
