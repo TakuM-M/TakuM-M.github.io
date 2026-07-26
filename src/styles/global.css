@@ -12,6 +12,13 @@
 
 html {
   scroll-behavior: smooth;
+  /* body は max-width + margin auto でビューポート幅を基準に中央寄せしている。
+     スクロールバーの有無で基準幅が変わると、ページ遷移のたびに中央位置が
+     スクロールバー幅ぶん横に飛ぶ（Works だけ縦スクロールが出るため顕著）。
+     左右に同じ幅を常時確保して、どのページでも同じ位置に中央寄せする。 */
+  scrollbar-gutter: stable both-edges;
+  /* scrollbar-gutter 未対応ブラウザ向け: スクロールバーを常時表示して幅を固定する */
+  overflow-y: scroll;
 }
 
 body {
@@ -60,11 +67,30 @@ article h3 {
   margin: 0 0 1.5rem;
 }
 
-.profile {
+/* トップページ全体を ラベル列 / 内容列 の2カラムに揃える */
+.index {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem 2.5rem;
-  margin-top: 2rem;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 2.5rem;
+  row-gap: 2rem;
+}
+
+.index > h1 {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* 各ブロックは subgrid で .index の列を共有する */
+.profile,
+.selected {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.profile {
+  row-gap: 1rem;
 }
 
 .profile dt {
@@ -106,7 +132,8 @@ article h3 {
 }
 
 .selected {
-  margin-top: 3.5rem;
+  row-gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .selected h2,
@@ -120,41 +147,50 @@ article h3 {
   margin: 0 0 0.75rem;
 }
 
+.selected h2 {
+  grid-column: 1;
+  margin: 0;
+  padding-top: 0.35rem;
+}
+
 .selected ul {
+  grid-column: 2;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .selected .more {
-  margin-top: 1rem;
+  grid-column: 2;
+  margin: 0;
   font-size: 0.875rem;
 }
 
-.pubs {
+/* publication の発表情報・project の開発情報を共通の体裁で並べる */
+.records {
   margin: 0.75rem 0 0;
   list-style: none;
   padding: 0;
 }
 
-.pubs li {
+.records li {
   display: grid;
   gap: 0.15rem;
   justify-items: start;
 }
 
-.pubs li + li {
+.records li + li {
   margin-top: 1.25rem;
 }
 
-.pubs .pub-meta {
+.records .record-meta {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   letter-spacing: 0.04em;
   color: var(--color-mute);
 }
 
-.pubs .pub-url {
+.records .record-url {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   margin-top: 0.35rem;
@@ -166,6 +202,203 @@ article h3 {
   font-size: 0.875rem;
   font-family: var(--font-mono);
   margin-top: 1rem;
+}
+
+/* h1 直下の補助情報（件数・戻り先リンクなど） */
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.5rem;
+  margin: 0.75rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--color-mute);
+}
+
+/* blog 一覧・tag 別一覧: 日付列 と 記事列 の2カラム */
+.posts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2.25rem 2.5rem;
+  margin: 2rem 0 0;
+  list-style: none;
+  padding: 0;
+}
+
+.posts li {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+
+.posts time {
+  padding-top: 0.4rem;
+  white-space: nowrap;
+}
+
+.post-entry {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+}
+
+.posts h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.posts h3 a {
+  text-decoration: none;
+}
+
+.posts h3 a:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+.post-description {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-mute);
+}
+
+/* 記事に付いた tag の並び。折り返しは tag 単位で、tag 名の中では折らない */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--color-mute);
+}
+
+.tags li,
+.post-meta .tag {
+  white-space: nowrap;
+}
+
+/* blog 記事ページ */
+.post header {
+  display: grid;
+  justify-items: start;
+  gap: 0.6rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-subtle);
+}
+
+.post h1 {
+  margin: 0;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.25rem;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  color: var(--color-mute);
+}
+
+.post-meta time {
+  font-size: inherit;
+}
+
+.post-lede {
+  margin: 0;
+  color: var(--color-mute);
+}
+
+.post + .page-meta {
+  margin-top: 3rem;
+}
+
+.post-body > :first-child {
+  margin-top: 0;
+}
+
+.post-body p {
+  margin: 1.25rem 0;
+}
+
+.post-body h2 {
+  margin-top: 2.5rem;
+  font-size: 1.25rem;
+}
+
+.post-body h3 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.post-body ul,
+.post-body ol {
+  padding-left: 1.25rem;
+}
+
+.post-body li + li {
+  margin-top: 0.35rem;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-body blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--color-subtle);
+  color: var(--color-mute);
+}
+
+.post-body :not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-text) 6%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.post-body pre {
+  overflow-x: auto;
+  padding: 1rem 1.25rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* 横に長い表はページごと横スクロールさせず、表の中でスクロールさせる */
+.post-body table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.post-body th,
+.post-body td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-subtle);
+  text-align: left;
+}
+
+.post-body hr {
+  margin: 2.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-subtle);
 }
 
 nav {
@@ -200,7 +433,7 @@ a:hover {
   text-decoration-color: currentColor;
 }
 
-article {
+.works-section article {
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--color-subtle);
   scroll-margin-top: 2rem;
@@ -256,6 +489,31 @@ time {
     --text-h1: 1.5rem;
   }
 
+  .index {
+    grid-template-columns: 1fr;
+  }
+
+  .profile {
+    row-gap: 0.15rem;
+  }
+
+  .profile dd + dt {
+    margin-top: 1rem;
+  }
+
+  .profile dt,
+  .selected h2 {
+    padding-top: 0;
+  }
+
+  .selected {
+    row-gap: 0.15rem;
+  }
+
+  .selected .more {
+    margin-top: 0.85rem;
+  }
+
   .career {
     grid-template-columns: 1fr;
     gap: 1.75rem;
@@ -269,4 +527,16 @@ time {
     padding-top: 0;
   }
 
+  .posts {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+
+  .posts li {
+    row-gap: 0.35rem;
+  }
+
+  .posts time {
+    padding-top: 0;
+  }
 }

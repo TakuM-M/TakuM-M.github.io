@@ -21,7 +21,9 @@ const entries = await Promise.all(
       );
     }
     const { Content } = await render(work);
-    return { work, article, Content };
+    // 開発 → 発表 の順に、同じ形式で並べる
+    const records = [...work.data.developments, ...work.data.publications];
+    return { work, article, Content, records };
   }),
 );
 
@@ -36,20 +38,20 @@ const sections = SECTIONS.map((section) => ({
   {sections.map(({ heading, items }) => (
     <section class="works-section">
       <h2>{heading}</h2>
-      {items.map(({ work, article, Content }) => (
+      {items.map(({ work, article, Content, records }) => (
         <article id={work.id}>
           <h3>{work.data.title}</h3>
           <Content />
-          {work.data.publications.length > 0 && (
-            <ul class="pubs">
-              {work.data.publications.map((pub) => (
+          {records.length > 0 && (
+            <ul class="records">
+              {records.map((record) => (
                 <li>
-                  <span class="pub-venue">{pub.venue}</span>
-                  <span class="pub-meta">{pub.date} · {pub.type}</span>
-                  {pub.authors && <span class="pub-authors">{pub.authors}</span>}
-                  {pub.href && (
-                    <a class="pub-url" href={pub.href} target="_blank" rel="noopener">
-                      {pub.linkLabel}
+                  {record.venue && <span class="record-venue">{record.venue}</span>}
+                  <span class="record-meta">{record.date} · {record.type}</span>
+                  {record.authors && <span class="record-authors">{record.authors}</span>}
+                  {record.href && (
+                    <a class="record-url" href={record.href} target="_blank" rel="noopener">
+                      {record.linkLabel}
                     </a>
                   )}
                 </li>

@@ -1,6 +1,7 @@
 ---
-title: Visuable for You
+title: Visuable for You という個人開発をしました
 description: YOLO と LSTM を組み合わせた検出モデルの実装記録
 pubDate: 2026-07-26
+tags:
+  - personal project
 ---
-Hello world! This is a test post for the new blog system. In this post, I will share my experience implementing a detection model that combines YOLO and LSTM.
