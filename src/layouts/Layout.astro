@@ -1,28 +1,81 @@
 ---
+import { ClientRouter } from 'astro:transitions'
 import '../styles/global.css'
 const { title } = Astro.props
 const year = new Date().getFullYear()
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate="none">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{ title }</title>
+		<ClientRouter />
 	</head>
 	<body>
-		<nav>
+		<!-- site-name の hover アニメーションが遷移のたびに再生されないよう、
+		     nav の DOM をページをまたいで持ち越す -->
+		<nav transition:persist="nav">
 			<ul>
-				<li class="site-name"><a href="/">TakuM-M</a></li>
+				<li class="site-name">
+					<a href="/" aria-label="Takumi Miyazawa">
+						<span>Taku</span>
+						<span class="hide"><span>M</span></span>
+						<span class="reveal"><span>mi</span></span>
+						<span class="hide"><span>-</span></span>
+						<span class="reveal"><span>&nbsp;</span></span>
+						<span>M</span>
+						<span class="reveal"><span>iyazawa</span></span>
+					</a>
+				</li>
 				<li><a href="/career">Career</a></li>
 				<li><a href="/works">Works</a></li>
 				<li><a href="/blog">Blog</a></li>
 			</ul>
 		</nav>
+		<script>
+			// ページ遷移で DOM を差し替えると、マウスが乗ったままでもブラウザは
+			// :hover を再判定しない（次にマウスが動くまで外れた扱いになる）。
+			// hover 状態をクラスとして持てば、persist した nav ごと持ち越せる。
+			const name = document.querySelector('.site-name a')
+			const setOpen = (open: boolean) => name?.classList.toggle('is-open', open)
+
+			// 遷移中は DOM の差し替えでマウスが乗ったままでも mouseleave が
+			// 飛んでくる。素直に閉じると名前が縮むので、その間は離脱を無視する。
+			let navigating = false
+
+			// 遷移後の :hover は当てにならないため、次にマウスが動いた時点で
+			// ポインタの実座標が名前の矩形に入っているかで状態を取り直す。
+			const syncFromPointer = (event: PointerEvent) => {
+				const box = name?.getBoundingClientRect()
+				if (!box) return
+				setOpen(
+					event.clientX >= box.left &&
+						event.clientX <= box.right &&
+						event.clientY >= box.top &&
+						event.clientY <= box.bottom,
+				)
+			}
+
+			name?.addEventListener('mouseenter', () => setOpen(true))
+			name?.addEventListener('mouseleave', () => {
+				if (!navigating) setOpen(false)
+			})
+
+			document.addEventListener('astro:before-preparation', () => {
+				navigating = true
+			})
+
+			document.addEventListener('astro:page-load', () => {
+				navigating = false
+				document.addEventListener('pointermove', syncFromPointer, { once: true })
+			})
+		</script>
 	<slot></slot>
 		<footer>
 			<p>&copy; {year} Takumi Miyazawa</p>

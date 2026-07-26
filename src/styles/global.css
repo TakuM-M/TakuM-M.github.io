@@ -408,6 +408,7 @@ nav {
 nav ul {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
   padding: 0;
   align-items: baseline;
@@ -420,8 +421,61 @@ nav .site-name {
   letter-spacing: -0.01em;
 }
 
+/* hover で TakuM-M → Takumi Miyazawa に伸ばす。
+   flex にすると要素間の改行が空白として描画されないので、
+   1文字ずつ span に割っても表示は地続きのまま保てる。 */
 nav .site-name a {
+  display: inline-flex;
+  align-items: baseline;
   text-decoration: none;
+}
+
+/* 幅は grid トラックを 0fr↔1fr で補間して出す。
+   max-width に em を置くのと違い、実際の文字幅ちょうどで止まる。 */
+nav .site-name .reveal,
+nav .site-name .hide {
+  display: inline-grid;
+  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav .site-name .reveal {
+  grid-template-columns: 0fr;
+}
+
+nav .site-name .hide {
+  grid-template-columns: 1fr;
+}
+
+/* min-width: 0 がないとトラックが min-content 幅より縮まない */
+nav .site-name .reveal > span,
+nav .site-name .hide > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* hover を持たない端末では TakuM-M のまま置く。
+   .is-open は :hover の控え -- ページ遷移で DOM を差し替えると
+   マウスが乗ったままでも :hover が外れるため、JS 側で状態を保つ。 */
+@media (hover: hover) {
+  nav .site-name a:hover .reveal,
+  nav .site-name a.is-open .reveal,
+  nav .site-name a:focus-visible .reveal {
+    grid-template-columns: 1fr;
+  }
+
+  nav .site-name a:hover .hide,
+  nav .site-name a.is-open .hide,
+  nav .site-name a:focus-visible .hide {
+    grid-template-columns: 0fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  nav .site-name .reveal,
+  nav .site-name .hide {
+    transition: none;
+  }
 }
 
 a {
