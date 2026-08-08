@@ -7,6 +7,9 @@
   --font-mono: ui-monospace, "SF Mono", "Fira Code", monospace;
   --page-padding-y: 3rem;
   --page-padding-x: 1.5rem;
+  --page-width: 42rem;
+  /* 本文の端から左右の目次までの距離 */
+  --toc-gap: 3rem;
   --text-h1: 2rem;
 }
 
@@ -22,7 +25,7 @@ html {
 }
 
 body {
-  max-width: 42rem;
+  max-width: var(--page-width);
   margin: 0 auto;
   line-height: 1.7;
   color: var(--color-text);
@@ -30,13 +33,18 @@ body {
   padding: var(--page-padding-y) var(--page-padding-x);
 }
 
-h1 {
-  font-family: var(--font-heading);
+/* 見出しも本文と同じ明朝で揃える。書体を変えずに、
+   太さでレベル差を出す。 */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-body);
 }
 
 h1 {
   font-size: var(--text-h1);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 
@@ -44,14 +52,14 @@ h2 {
   margin-top: 3rem;
   margin-bottom: 0.5rem;
   font-size: 1.125rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 article h3 {
   margin: 0 0 0.5rem;
   font-size: 1.125rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
@@ -357,7 +365,15 @@ article h3 {
 .post-body h3 {
   margin: 2rem 0 0.5rem;
   font-size: 1.0625rem;
-  font-weight: 500;
+  font-weight: 600;
+}
+
+/* 記事本文は h2（節）と h3（小節）で足りるが、
+   深くなったときにブラウザ既定へ落ちないようにしておく。 */
+.post-body h4 {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .post-body ul,
@@ -372,6 +388,27 @@ article h3 {
 .post-body img {
   max-width: 100%;
   height: auto;
+}
+
+/*
+ * 画像だけの段落は figure に組み替えている（astro.config.mjs の figure-caption）。
+ * 段落ではないので字下げはせず、キャプションは本文より小さく灰色で図の下に置く。
+ */
+.post-body figure {
+  margin: 1.75rem 0;
+}
+
+.post-body figure img {
+  display: block;
+  margin: 0 auto;
+}
+
+.post-body figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-mute);
+  text-align: center;
 }
 
 .post-body blockquote {
@@ -411,13 +448,20 @@ article h3 {
   overflow-y: hidden;
 }
 
-/* 横に長い表はページごと横スクロールさせず、表の中でスクロールさせる */
-.post-body table {
-  display: block;
-  width: 100%;
+/* 横に長い表はページごと横スクロールさせず、表の中でスクロールさせる。
+   スクロールは table ではなくラッパーに持たせる（astro.config.mjs の
+   table-scroll プラグインが挿入）。table を display: block にすると
+   table box でなくなり、列が本文幅まで広がらず左に寄ってしまう。 */
+.post-body .table-scroll {
+  margin: 1.5rem 0;
   overflow-x: auto;
+}
+
+.post-body table {
+  width: 100%;
   border-collapse: collapse;
   font-size: 0.9375rem;
+  line-height: 1.6;
 }
 
 .post-body th,
@@ -425,12 +469,262 @@ article h3 {
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--color-subtle);
   text-align: left;
+  vertical-align: top;
+}
+
+/* 見出し行は本文と区別する */
+.post-body thead th {
+  border-bottom-color: var(--color-text);
+  white-space: nowrap;
+}
+
+/* 1 列目は項目名。「入力正規化」が「入力正規 / 化」のように
+   途中で折れるのを防ぐ */
+.post-body tbody td:first-child {
+  white-space: nowrap;
 }
 
 .post-body hr {
   margin: 2.5rem 0;
   border: 0;
   border-top: 1px solid var(--color-subtle);
+}
+
+/* 目次から飛んだ見出しがビューポートの上端に貼り付かないようにする */
+.post-body h2,
+.post-body h3 {
+  scroll-margin-top: 4rem;
+}
+
+/*
+ * 目次。本文が中央寄せで左右が空くので、両側を役割で分けて使う。
+ *   左  見出しを長短の目盛りとして並べたレール。題名は hover で開く。
+ *   右  いま読んでいる「章 › 節」だけ。
+ *
+ * どちらも fixed で、本文と同じ基準（ビューポート中央 ± 本文の半幅）に
+ * 揃える。位置も幅も % で書くこと -- vw はスクロールバーの幅を含むので、
+ * scrollbar-gutter で左右に取ってある余白のぶん本文からずれる。
+ */
+.toc-rail,
+.toc-now {
+  display: none;
+}
+
+/* 左右に目次を置けるだけの余白が出る幅。.toc-inline との切り替え点でもある */
+@media (min-width: 1280px) {
+  .toc-inline {
+    display: none;
+  }
+
+  .toc-rail,
+  .toc-now {
+    display: block;
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    /* 本文の端から --toc-gap 空け、画面端にも 1rem 残した残りが持てる幅 */
+    max-width: calc(50% - var(--page-width) / 2 - var(--toc-gap) - 1rem);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    letter-spacing: 0.04em;
+  }
+
+  .toc-rail {
+    right: calc(50% + var(--page-width) / 2 + var(--toc-gap));
+    margin: 0; /* サイト nav 向けの nav { margin-bottom } を打ち消す */
+  }
+
+  .toc-rail ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /*
+   * 行の高さは見出しの数で割って決める。長い記事でもレールが画面の外へ
+   * はみ出さず、短い記事では詰まりすぎない。--toc-rows は Astro 側が渡す。
+   */
+  .toc-rail a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    height: min(1.35rem, calc(56vh / var(--toc-rows)));
+    overflow: hidden;
+    color: var(--color-mute);
+    text-decoration: none;
+    transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
+  }
+
+  .toc-rail:hover a,
+  .toc-rail:focus-within a {
+    height: min(2.25rem, calc(84vh / var(--toc-rows)));
+  }
+
+  /* 題名は畳んでいる間も同じ幅を占めさせる。目盛りは常に右端で動かない */
+  .toc-rail .toc-title {
+    min-width: 0;
+    overflow: hidden;
+    line-height: 1.3;
+    text-align: right;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .toc-rail:hover .toc-title,
+  .toc-rail:focus-within .toc-title {
+    opacity: 1;
+  }
+
+  /*
+   * 目盛りの長さが見出しの階層を表す。h2 が長く、h3 が短い。
+   * 伸縮するのは枠の中の線だけで、枠の幅は最長（現在地の h2）に固定する。
+   * 枠ごと縮めると、線が短い行や現在地が伸びた行だけ題名が横にずれる。
+   * 線は枠の右端 -- 本文に近いほう -- で揃え、左へ伸びる。
+   */
+  .toc-rail .toc-tick {
+    flex: none;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 4.5rem;
+  }
+
+  .toc-rail .toc-tick::before {
+    content: '';
+    width: 2.75rem;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), height 0.25s ease;
+  }
+
+  .toc-rail .toc-d3 .toc-tick::before {
+    width: 1.375rem;
+  }
+
+  .toc-rail a:hover,
+  .toc-rail a:focus-visible,
+  .toc-rail a.is-active {
+    color: var(--color-text);
+  }
+
+  /* いま読んでいる見出しは、目盛りが伸びて太くなる */
+  .toc-rail a.is-active .toc-tick::before {
+    width: 4.5rem;
+    height: 2px;
+  }
+
+  .toc-rail .toc-d3.is-active .toc-tick::before {
+    width: 3.125rem;
+  }
+
+  .toc-now {
+    left: calc(50% + var(--page-width) / 2 + var(--toc-gap));
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .toc-now.is-visible {
+    opacity: 1;
+  }
+
+  .toc-now span {
+    display: block;
+  }
+
+  /* 章は本文と同じ明朝で。右側だけ書体が変わることで目次の続きに見えない */
+  .toc-now .toc-now-section {
+    font-family: var(--font-body);
+    font-size: 1.25rem;
+    line-height: 1.5;
+    letter-spacing: normal;
+  }
+
+  /* 節が無い（h2 の直下を読んでいる）ときは行ごと消す */
+  .toc-now .toc-now-sub:empty {
+    display: none;
+  }
+
+  .toc-now .toc-now-sub {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+    text-indent: -1rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: normal;
+    color: var(--color-mute);
+  }
+
+  .toc-now .toc-now-sub::before {
+    content: '\203A\00a0';
+  }
+
+  /* 章が変わったことを差し替えの動きで見せる */
+  @keyframes toc-now-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.4rem);
+    }
+  }
+
+  .toc-now.is-changed span {
+    animation: toc-now-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* 左右の余白が足りない画面向け。記事の頭に畳んだ目次を置く */
+.toc-inline {
+  margin: 0 0 2.5rem;
+}
+
+.toc-inline summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+
+.toc-inline ol {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  font-size: 0.9375rem;
+}
+
+.toc-inline li + li {
+  margin-top: 0.5rem;
+}
+
+.toc-inline .toc-d3 {
+  padding-left: 1.5rem;
+}
+
+.toc-inline a {
+  text-decoration: none;
+}
+
+.toc-inline a:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc-rail a,
+  .toc-rail .toc-title,
+  .toc-rail .toc-tick::before,
+  .toc-now {
+    transition: none;
+  }
+
+  .toc-now.is-changed span {
+    animation: none;
+  }
 }
 
 nav {

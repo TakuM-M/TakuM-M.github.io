@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 import { render } from 'astro:content';
 import { formatDate, getPosts } from '../../lib/blog';
 
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <Layout title={`${post.data.title} | Takumi`}>
@@ -27,6 +28,8 @@ const { Content } = await render(post);
       </p>
       <p class="post-lede">{post.data.description}</p>
     </header>
+
+    <TableOfContents headings={headings} />
 
     <div class="post-body">
       <Content />

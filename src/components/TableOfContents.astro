@@ -1,0 +1,184 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+/*
+ * 記事本文は h2（章）と h3（節）で構成する。h4 以下は左レールの目盛りが
+ * 細かくなりすぎるうえ、右側の「章 › 節」の 2 段にも収まらないので落とす。
+ */
+const items = headings.filter(({ depth }) => depth === 2 || depth === 3);
+
+// 見出しが 1 つしかない記事に目次を出しても案内にならない
+const enabled = items.length > 1;
+---
+
+{enabled && (
+  <Fragment>
+    {/*
+      左レール。見出しを長さの違う目盛りとして並べ、題名はレールに
+      hover / focus したときだけ開く。行の高さはビューポートに収まるよう
+      見出し数で割って決めるので、--toc-rows を CSS へ渡す。
+    */}
+    <nav class="toc-rail" aria-label="目次" style={`--toc-rows: ${items.length}`}>
+      <ol>
+        {items.map((heading) => (
+          <li>
+            <a
+              class={`toc-d${heading.depth}`}
+              href={`#${heading.slug}`}
+              data-slug={heading.slug}
+              data-depth={heading.depth}
+            >
+              <span class="toc-title">{heading.text}</span>
+              <span class="toc-tick"></span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    {/* 右側。いま読んでいる位置を示すだけの表示なので支援技術からは隠す */}
+    <div class="toc-now" aria-hidden="true">
+      <span class="toc-now-section"></span>
+      <span class="toc-now-sub"></span>
+    </div>
+
+    {/* 左右の余白が足りない画面向け。記事の頭に畳んだ目次を置く */}
+    <details class="toc-inline">
+      <summary>目次</summary>
+      <ol>
+        {items.map((heading) => (
+          <li class={`toc-d${heading.depth}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  </Fragment>
+)}
+
+<script>
+  /*
+   * 現在地の判定線。これより上に来た最後の見出しを「いま読んでいる見出し」と
+   * みなす。ビューポート比だけだと背の高い画面で線が下がりすぎ、短い節を
+   * 飛ばしてしまうので上限を付ける。
+   */
+  const LINE_RATIO = 0.3;
+  const LINE_MAX = 160;
+
+  interface Entry {
+    link: HTMLAnchorElement;
+    target: HTMLElement;
+    depth: number;
+    text: string;
+  }
+
+  function setup() {
+    const rail = document.querySelector<HTMLElement>('.toc-rail');
+    const now = document.querySelector<HTMLElement>('.toc-now');
+    const section = now?.querySelector<HTMLElement>('.toc-now-section');
+    const sub = now?.querySelector<HTMLElement>('.toc-now-sub');
+    if (!rail || !now || !section || !sub) return;
+
+    const entries: Entry[] = [];
+    for (const link of rail.querySelectorAll<HTMLAnchorElement>('a[data-slug]')) {
+      const target = document.getElementById(link.dataset.slug ?? '');
+      if (!target) continue;
+      entries.push({
+        link,
+        target,
+        depth: Number(link.dataset.depth),
+        text: link.querySelector('.toc-title')?.textContent ?? '',
+      });
+    }
+    if (entries.length === 0) return;
+
+    let active = -1;
+
+    const render = () => {
+      entries.forEach((entry, index) => entry.link.classList.toggle('is-active', index === active));
+
+      // 最初の見出しより上（導入部）では現在地を出さない
+      if (active < 0) {
+        now.classList.remove('is-visible');
+        return;
+      }
+
+      // 章は直近の h2、節はアクティブが h3 のときだけ
+      let chapter = '';
+      for (let i = active; i >= 0; i--) {
+        if (entries[i].depth === 2) {
+          chapter = entries[i].text;
+          break;
+        }
+      }
+      section.textContent = chapter;
+      sub.textContent = entries[active].depth === 3 ? entries[active].text : '';
+
+      // クラスを外して reflow を挟むと、同じアニメーションを頭から再生できる
+      now.classList.remove('is-changed');
+      void now.offsetWidth;
+      now.classList.add('is-visible', 'is-changed');
+    };
+
+    const update = () => {
+      /*
+       * 判定線はふだんビューポートの上端寄りに固定する。ただし文書の末尾は
+       * それ以上スクロールできないので、最後のいくつかの見出しが線まで
+       * 上がってこず、いつまでも現在地にならない。残りのスクロール量が
+       * 尽きるぶんだけ線を下げて補う -- 最下部では線がビューポート下端と
+       * 重なり、画面に出ている最後の見出しが現在地になる。
+       */
+      const remaining = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight - window.scrollY,
+        0,
+      );
+      const line = Math.max(
+        Math.min(window.innerHeight * LINE_RATIO, LINE_MAX),
+        window.innerHeight - remaining,
+      );
+
+      let next = -1;
+      for (const entry of entries) {
+        if (entry.target.getBoundingClientRect().top > line) break;
+        next += 1;
+      }
+      if (next === active) return;
+      active = next;
+      render();
+    };
+
+    // scroll ごとに測り直すので、画像の読み込みやリサイズによるずれは自動で直る
+    let queued = false;
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        update();
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+
+    // ページ遷移で DOM ごと差し替わるため、掴んだ要素と一緒にリスナも捨てる
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      },
+      { once: true },
+    );
+
+    update();
+  }
+
+  document.addEventListener('astro:page-load', setup);
+</script>

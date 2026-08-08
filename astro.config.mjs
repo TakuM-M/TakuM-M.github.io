@@ -37,6 +37,79 @@ const katexHastPlugin = defineHastPlugin({
 });
 
 /**
+ * 画像だけの段落を figure に組み替える。`![alt](path "キャプション")` の
+ * title があれば figcaption にする（alt は代替テキストのまま残す）。
+ *
+ * p を残したまま figure を差し込むと p の中に figure が入って DOM が壊れるので、
+ * 段落ごと置き換える。段落でなくなることで、日本語用の text-indent も外れる。
+ *
+ * これは画像最適化より前に走るが、src は書き換えずに残すので、
+ * @astrojs/markdown-satteri の image-marker が後続のパスで img を拾い、
+ * astro:assets の最適化（WebP 変換・サイズ付与）にはそのまま乗る。
+ */
+const figureHastPlugin = defineHastPlugin({
+  name: 'figure-caption',
+  element: {
+    filter: ['p'],
+    visit: (node) => {
+      const children = (node.children ?? []).filter(
+        (child) => child.type !== 'text' || child.value.trim() !== ''
+      );
+      const [img] = children;
+      if (children.length !== 1 || img.type !== 'element' || img.tagName !== 'img') return;
+
+      const { title, ...properties } = img.properties ?? {};
+      const caption =
+        typeof title === 'string' && title
+          ? [
+              {
+                type: /** @type {const} */ ('element'),
+                tagName: 'figcaption',
+                properties: {},
+                children: [{ type: /** @type {const} */ ('text'), value: title }],
+              },
+            ]
+          : [];
+
+      return {
+        type: 'element',
+        tagName: 'figure',
+        properties: {},
+        children: [{ ...img, properties }, ...caption],
+      };
+    },
+  },
+});
+
+/**
+ * 表をスクロール用の div で包む。
+ *
+ * 横に長い表をページごと横スクロールさせないためには overflow-x を持つ
+ * ブロックが要るが、table 自体に display: block を掛けると table box では
+ * なくなり、width: 100% を指定しても列が内容幅までしか広がらず左に寄る。
+ * ラッパー側にスクロールを持たせて、table は table のまま残す。
+ */
+const wrapped = new WeakSet();
+
+const tableScrollHastPlugin = defineHastPlugin({
+  name: 'table-scroll',
+  element: {
+    filter: ['table'],
+    visit: (node) => {
+      // 差し替えた div の中を再訪されても二重に包まない
+      if (wrapped.has(node)) return;
+      wrapped.add(node);
+      return {
+        type: 'element',
+        tagName: 'div',
+        properties: { className: ['table-scroll'] },
+        children: [node],
+      };
+    },
+  },
+});
+
+/**
  * 式が壊れていてもビルドは通し、崩れた箇所を赤字で残して警告を出す。
  * strict: 'ignore' は `\text{}` 内の日本語などで警告が飛ぶのを抑えるため。
  *
@@ -67,7 +140,7 @@ export default defineConfig({
     processor: satteri({
       features: { math: true },
       mdastPlugins: [katexMdastPlugin],
-      hastPlugins: [katexHastPlugin],
+      hastPlugins: [katexHastPlugin, figureHastPlugin, tableScrollHastPlugin],
     }),
   },
 });
