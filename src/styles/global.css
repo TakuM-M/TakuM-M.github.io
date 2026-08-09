@@ -453,12 +453,29 @@ article h3 {
    table-scroll プラグインが挿入）。table を display: block にすると
    table box でなくなり、列が本文幅まで広がらず左に寄ってしまう。 */
 .post-body .table-scroll {
-  margin: 1.5rem 0;
+  margin-block: 1.5rem;
+  /* 本文の左右余白ぶんもスクロール領域に使う。表がはみ出すとき、切れ目が
+     画面の端に来るので右に続きがあることが分かる（余白の中で切れると、
+     ただ欠けているように見える）。padding で中身の左端は本文に揃うので、
+     表が収まる画面では見た目は変わらない。 */
+  margin-inline: calc(var(--page-padding-x) * -1);
+  padding-inline: var(--page-padding-x);
   overflow-x: auto;
+  /* 表を横に振り切ったとき、続けてページの戻る操作が発火しないようにする */
+  overscroll-behavior-x: contain;
 }
 
+/* 幅の決め方は min(max-content, 36rem) を本文幅で下支えする、と読む。
+   本文幅に収まる画面では今までどおり width: 100% と同じ挙動になり、
+   本文幅が足りない画面（スマートフォン）でだけ、表がラッパーからはみ出して
+   横スクロールに切り替わる。width: 100% だけだと、はみ出す代わりに
+   nowrap の 1 列目に押されて残りの列が数文字幅まで潰れてしまう。
+   36rem は上限。これを外すと max-content まで伸びて、長い説明の列が
+   1 行に伸びきり、狭い画面でスクロール量だけが増える。 */
 .post-body table {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
+  max-width: 36rem;
   border-collapse: collapse;
   font-size: 0.9375rem;
   line-height: 1.6;
@@ -918,5 +935,27 @@ time {
 
   .posts time {
     padding-top: 0;
+  }
+
+  /* 狭い画面では 1 文字ぶんの差が列幅に効くので、本文より一段小さくする */
+  .post-body table {
+    font-size: 0.875rem;
+  }
+
+  .post-body th,
+  .post-body td {
+    padding: 0.5rem 0.625rem;
+  }
+
+  /* 表の外側の余白は .table-scroll の padding が持っている。両端のセルから
+     外すと、1 列目が本文の行頭に揃い、そのぶんの幅も列に回る */
+  .post-body th:first-child,
+  .post-body td:first-child {
+    padding-left: 0;
+  }
+
+  .post-body th:last-child,
+  .post-body td:last-child {
+    padding-right: 0;
   }
 }
