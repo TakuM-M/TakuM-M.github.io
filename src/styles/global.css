@@ -101,7 +101,8 @@ article h3 {
   row-gap: 1rem;
 }
 
-.profile dt {
+.profile dt,
+.contact dt {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   letter-spacing: 0.04em;
@@ -114,11 +115,111 @@ article h3 {
   margin: 0;
 }
 
+/* Contact: ラベル列 / 内容列。.profile と同じ体裁 */
+.contact-lede {
+  margin: 0;
+  color: var(--color-mute);
+}
+
+.contact {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem 2.5rem;
+  margin: 2.5rem 0 0;
+}
+
+.contact dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+}
+
+/* メールアドレスは本文より一回り大きく、署名のように置く */
+.contact-mail {
+  font-size: 1.25rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.contact-mail:hover,
+.contact-mail:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+/*
+ * 文字列の一部を 0fr↔1fr で入れ替える。nav の site-name と同じ仕組みで、
+ * .is-swapped が付くと .swap-out が畳まれると同時に .swap-in が開く。
+ *   Copy ボタン  Copy → Copied
+ */
+.swap-in,
+.swap-out {
+  display: inline-grid;
+  transition: grid-template-columns 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.swap-in {
+  grid-template-columns: 0fr;
+}
+
+.swap-out {
+  grid-template-columns: 1fr;
+}
+
+.swap-in > span,
+.swap-out > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.is-swapped .swap-in {
+  grid-template-columns: 1fr;
+}
+
+.is-swapped .swap-out {
+  grid-template-columns: 0fr;
+}
+
+.contact-copy {
+  appearance: none;
+  display: inline-flex;
+  align-items: baseline;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-mute);
+  transition: color 0.25s ease;
+}
+
+.contact-copy:hover,
+.contact-copy:focus-visible,
+.contact-copy.is-swapped {
+  color: var(--color-text);
+}
+
+/* Education / Work Experience の見出し。トップの .selected h2 と同じラベル書体 */
+.career-heading {
+  margin: 2.5rem 0 0;
+}
+
+/* Education と Work Experience の間はもう少し空ける */
+.career + .career-heading {
+  margin-top: 4rem;
+}
+
 .career {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 1.5rem 2.5rem;
-  margin-top: 2rem;
+  margin-top: 1.25rem;
   list-style: none;
   padding: 0;
 }
@@ -145,7 +246,8 @@ article h3 {
 }
 
 .selected h2,
-.works-section > h2 {
+.works-section > h2,
+.career-heading {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 400;
@@ -816,7 +918,9 @@ nav .site-name .hide > span {
 
 @media (prefers-reduced-motion: reduce) {
   nav .site-name .reveal,
-  nav .site-name .hide {
+  nav .site-name .hide,
+  .swap-in,
+  .swap-out {
     transition: none;
   }
 }
@@ -886,6 +990,23 @@ time {
     --text-h1: 1.5rem;
   }
 
+  /* リンクが 4 つになったので、狭い画面では間隔を詰めて 1 行に収める */
+  nav ul {
+    gap: 1rem;
+  }
+}
+
+/* それでも入らない幅では、リンクが 1 つだけ落ちるより
+   サイト名を 1 行目に独立させて、リンク 4 つを揃って 2 行目に置く */
+@media (max-width: 400px) {
+  nav .site-name {
+    flex-basis: 100%;
+  }
+
+  nav ul {
+    row-gap: 0.25rem;
+  }
+
   .index {
     grid-template-columns: 1fr;
   }
@@ -909,6 +1030,15 @@ time {
 
   .selected .more {
     margin-top: 0.85rem;
+  }
+
+  .contact {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .contact dt {
+    padding-top: 0;
   }
 
   .career {

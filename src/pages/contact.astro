@@ -1,0 +1,53 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const address = 'takumi.miyazawa.mm@gmail.com';
+---
+
+<Layout title="Contact | Takumi">
+  <h1>Contact</h1>
+  <p class="contact-lede">ご連絡は下記のメールアドレスまでお願いします。</p>
+
+  <dl class="contact">
+    <dt>Email</dt>
+    <dd>
+      <a class="contact-mail" href={`mailto:${address}`}>{address}</a>
+      <!-- 押すと Copy → Copied に伸びる（nav の site-name と同じ 0fr↔1fr の仕掛け、
+           global.css の .swap-*）。共通の接頭辞 "Cop" は動かさない -->
+      <button class="contact-copy" type="button" data-address={address} aria-label="Copy email address">
+        <span>Cop</span>
+        <span class="swap-out"><span>y</span></span>
+        <span class="swap-in"><span>ied</span></span>
+      </button>
+    </dd>
+  </dl>
+</Layout>
+
+<script>
+  // ClientRouter で遷移してきたときもハンドラが付くよう、page-load ごとに探す
+  document.addEventListener('astro:page-load', () => {
+    const button = document.querySelector<HTMLButtonElement>('.contact-copy')
+    if (!button) return
+
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    button.addEventListener('click', async () => {
+      const address = button.dataset.address ?? ''
+      try {
+        await navigator.clipboard.writeText(address)
+      } catch {
+        // clipboard が使えない環境（http など）では mailto: に任せる
+        location.href = `mailto:${address}`
+        return
+      }
+
+      button.classList.add('is-swapped')
+      button.setAttribute('aria-label', 'Copied')
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        button.classList.remove('is-swapped')
+        button.setAttribute('aria-label', 'Copy email address')
+      }, 1800)
+    })
+  })
+</script>
