@@ -75,11 +75,12 @@ article h3 {
   margin: 0 0 1.5rem;
 }
 
-/* トップページ: ラベルを見出しにして、その下に内容を置く 1 列構成。幅で切り替えない */
+/* トップページ: ラベルを見出しにして、その下に内容を置く 1 列構成。幅で切り替えない。
+   ブロック間は .profile の項目間 (row-gap 0.15rem + dt の margin-top 1rem) と同じ幅にする */
 .index {
   display: grid;
   grid-template-columns: 1fr;
-  row-gap: 2rem;
+  row-gap: 1.15rem;
 }
 
 .index > h1 {
@@ -246,7 +247,6 @@ article h3 {
 
 .selected {
   row-gap: 0.15rem;
-  margin-top: 1.5rem;
 }
 
 .selected h2,
