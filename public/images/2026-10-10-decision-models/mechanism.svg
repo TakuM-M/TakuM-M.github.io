@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 520" width="680" height="520" role="img" aria-label="LLM と判定モデルの推論の違い" font-family="system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic', 'IPAGothic', sans-serif">
-<title>LLM と判定モデルの推論の違い</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 520" width="680" height="520" role="img" aria-label="LLM と Decision Model の推論の違い" font-family="system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic', 'IPAGothic', sans-serif">
+<title>LLM と Decision Model の推論の違い</title>
 <rect width="680" height="520" fill="#ffffff"/>
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs>
 <text x="20.0" y="30.0" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="bold" >(a) LLM：答えを 1 トークンずつ書く</text>
@@ -33,7 +33,7 @@
 <text x="200.0" y="138.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal" >出したトークンを入力の末尾に足して、もう 1 回モデルを通す</text>
 <text x="200.0" y="158.0" font-size="12" fill="#52514e" text-anchor="start" font-weight="normal" >→ 出力が長いほど推論の回数が増える。確率もトークン単位でしか出ない</text>
 <line x1="20" y1="205" x2="660" y2="205" stroke="#e1e0d9"/>
-<text x="20.0" y="235.0" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="bold" >(b) 判定モデル：1 回通して、全選択肢の確率を返す</text>
+<text x="20.0" y="235.0" font-size="16" fill="#0b0b0b" text-anchor="start" font-weight="bold" >(b) Decision Model：1 回通して、全選択肢の確率を返す</text>
 <rect x="20" y="255" width="170" height="70" rx="8" fill="#f4f3ef" stroke="#c3c2b7" stroke-width="1.5"/>
 <text x="105.0" y="280.0" font-size="14" fill="#0b0b0b" text-anchor="middle" font-weight="normal" font-family="ui-monospace, 'SF Mono', Menlo, monospace" >state</text>
 <text x="105.0" y="302.0" font-size="12" fill="#52514e" text-anchor="middle" font-weight="normal" >判定したいテキスト</text>
