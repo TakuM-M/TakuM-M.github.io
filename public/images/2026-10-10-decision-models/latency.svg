@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 380" width="680" height="380" role="img" aria-label="タスク別の 1 件あたりレイテンシ p50" font-family="system-ui, -apple-system, 'Hiragino Sans', 'Yu Gothic', 'IPAGothic', sans-serif">
+<title>タスク別の 1 件あたりレイテンシ p50</title>
+<rect width="680" height="380" fill="#ffffff"/>
+<rect x="56" y="18" width="12" height="12" rx="3" fill="#2a78d6"/>
+<text x="74.0" y="28.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="normal" >Jev</text>
+<rect x="118.2" y="18" width="12" height="12" rx="3" fill="#eb6834"/>
+<text x="136.2" y="28.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="normal" >Laya</text>
+<rect x="187.8" y="18" width="12" height="12" rx="3" fill="#1baf7a"/>
+<text x="205.8" y="28.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="normal" >Claude Haiku 4.5</text>
+<rect x="346.20000000000005" y="18" width="12" height="12" rx="3" fill="#eda100"/>
+<text x="364.2" y="28.0" font-size="13" fill="#52514e" text-anchor="start" font-weight="normal" >Qwen3 4B</text>
+<text x="8.0" y="50.0" font-size="12" fill="#898781" text-anchor="start" font-weight="normal" >ms</text>
+<line x1="56" y1="322.0" x2="664" y2="322.0" stroke="#c3c2b7" stroke-width="1.5"/>
+<text x="48.0" y="326.0" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">0</text>
+<line x1="56" y1="270.4" x2="664" y2="270.4" stroke="#e1e0d9" stroke-width="1"/>
+<text x="48.0" y="274.4" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">300</text>
+<line x1="56" y1="218.8" x2="664" y2="218.8" stroke="#e1e0d9" stroke-width="1"/>
+<text x="48.0" y="222.8" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">600</text>
+<line x1="56" y1="167.2" x2="664" y2="167.2" stroke="#e1e0d9" stroke-width="1"/>
+<text x="48.0" y="171.2" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">900</text>
+<line x1="56" y1="115.6" x2="664" y2="115.6" stroke="#e1e0d9" stroke-width="1"/>
+<text x="48.0" y="119.6" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">1,200</text>
+<line x1="56" y1="64.0" x2="664" y2="64.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="48.0" y="68.0" font-size="12" fill="#898781" text-anchor="end" font-weight="normal" font-variant-numeric="tabular-nums">1,500</text>
+<path d="M71.0,322.0 V297.1 Q71.0,293.1 75.0,293.1 H96.0 Q100.0,293.1 100.0,297.1 V322.0 Z" fill="#2a78d6"/>
+<path d="M102.0,322.0 V308.5 Q102.0,304.5 106.0,304.5 H127.0 Q131.0,304.5 131.0,308.5 V322.0 Z" fill="#eb6834"/>
+<path d="M133.0,322.0 V188.6 Q133.0,184.6 137.0,184.6 H158.0 Q162.0,184.6 162.0,188.6 V322.0 Z" fill="#1baf7a"/>
+<path d="M164.0,322.0 V208.1 Q164.0,204.1 168.0,204.1 H189.0 Q193.0,204.1 193.0,208.1 V322.0 Z" fill="#eda100"/>
+<text x="132.0" y="344.0" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="bold" >SST-2</text>
+<text x="132.0" y="362.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="normal" >2 クラス</text>
+<path d="M223.0,322.0 V296.9 Q223.0,292.9 227.0,292.9 H248.0 Q252.0,292.9 252.0,296.9 V322.0 Z" fill="#2a78d6"/>
+<path d="M254.0,322.0 V301.8 Q254.0,297.8 258.0,297.8 H279.0 Q283.0,297.8 283.0,301.8 V322.0 Z" fill="#eb6834"/>
+<path d="M285.0,322.0 V197.2 Q285.0,193.2 289.0,193.2 H310.0 Q314.0,193.2 314.0,197.2 V322.0 Z" fill="#1baf7a"/>
+<path d="M316.0,322.0 V155.7 Q316.0,151.7 320.0,151.7 H341.0 Q345.0,151.7 345.0,155.7 V322.0 Z" fill="#eda100"/>
+<text x="284.0" y="344.0" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="bold" >AG News</text>
+<text x="284.0" y="362.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="normal" >4 クラス</text>
+<path d="M375.0,322.0 V297.7 Q375.0,293.7 379.0,293.7 H400.0 Q404.0,293.7 404.0,297.7 V322.0 Z" fill="#2a78d6"/>
+<path d="M406.0,322.0 V295.4 Q406.0,291.4 410.0,291.4 H431.0 Q435.0,291.4 435.0,295.4 V322.0 Z" fill="#eb6834"/>
+<path d="M437.0,322.0 V193.8 Q437.0,189.8 441.0,189.8 H462.0 Q466.0,189.8 466.0,193.8 V322.0 Z" fill="#1baf7a"/>
+<path d="M468.0,322.0 V161.9 Q468.0,157.9 472.0,157.9 H493.0 Q497.0,157.9 497.0,161.9 V322.0 Z" fill="#eda100"/>
+<text x="436.0" y="344.0" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="bold" >AG News v2</text>
+<text x="436.0" y="362.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="normal" >4 クラス</text>
+<path d="M527.0,322.0 V295.8 Q527.0,291.8 531.0,291.8 H552.0 Q556.0,291.8 556.0,295.8 V322.0 Z" fill="#2a78d6"/>
+<path d="M558.0,322.0 V278.0 Q558.0,274.0 562.0,274.0 H583.0 Q587.0,274.0 587.0,278.0 V322.0 Z" fill="#eb6834"/>
+<path d="M589.0,322.0 V184.9 Q589.0,180.9 593.0,180.9 H614.0 Q618.0,180.9 618.0,184.9 V322.0 Z" fill="#1baf7a"/>
+<path d="M620.0,322.0 V82.4 Q620.0,78.4 624.0,78.4 H645.0 Q649.0,78.4 649.0,82.4 V322.0 Z" fill="#eda100"/>
+<text x="588.0" y="344.0" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="bold" >Banking77</text>
+<text x="588.0" y="362.0" font-size="12" fill="#898781" text-anchor="middle" font-weight="normal" >77 クラス</text>
+</svg>
