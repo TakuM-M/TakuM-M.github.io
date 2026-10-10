@@ -15,8 +15,6 @@ tags:
 ## 先月から始まったトレンド
 
 - **9/15**: TypeSafe AI が Jev を公開
-- **9/17**: OpenRouter が Jev の提供を開始
-- **9/22**: jevbench が Jev・Laya・LLM の比較結果を公開
 - **9/29**: Liquid AI が d1 を公開
 - **9/30**: OpenAI が Decisions API を発表（10/6 に public beta）
 - **10/1**: Cloudflare が Clef を、Perplexity が pplx-decider を公開
