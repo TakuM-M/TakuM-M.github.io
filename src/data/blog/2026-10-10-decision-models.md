@@ -1,6 +1,6 @@
 ---
-title: 文章を書かない AI、判定モデル（Decision Models）を測ってみた
-description: Jev から始まった判定モデルのトレンドと仕組み、自前ベンチマークの結果、新しく出たモデル、今後の予想
+title: Decision Model について
+description: ベンチマークの実施
 pubDate: 2026-10-10
 tags:
   - machine learning
