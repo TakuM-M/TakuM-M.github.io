@@ -197,7 +197,7 @@ Jev は SST-2 と AG News なら 1 割強を人に回すだけで、残りの正
 
 一方で、今の判定モデルは英語が中心です。Laya も日本語や文脈に依存する判定は苦手とされていて、日本語の業務データでどこまで使えるかは、これから確かめる価値があると思っています。
 
-自分としては、今回の jevbench の再現で計測の仕組みは確認できたので、次は本題のログ分類のデータを増やして測り直すつもりです。あわせて、d1・Clef・OpenAI の Decisions API も同じ条件で比べてみたいと思います。
+次は、d1・Clef・OpenAI の Decisions API も同じ条件で比べてみたいと思います。
 
 - code: <https://github.com/TakuM-M/hellow-jev>
 - jevbench: <https://github.com/dhruvmehra/jevbench>
