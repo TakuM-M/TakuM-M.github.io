@@ -203,9 +203,5 @@ Jev は SST-2 と AG News なら 1 割強を人に回すだけで、残りの正
 
     分類の層はどれも 1 回の推論で済むので、速く安く動きます。確率が返るので、どの層で迷ったかも分かります。今は 1 つの LLM が判断も生成もまとめて担っていますが、その前段は、細かい判断を積み重ねる Decision Model に置き換わっていくのではないでしょうか
 
-一方で、今の Decision Model は英語が中心です。Laya も日本語や文脈に依存する判定は苦手とされていて、日本語の業務データでどこまで使えるかは、これから確かめる価値があると思っています。
-
-次は、d1・Clef・OpenAI の Decisions API も同じ条件で比べてみたいと思います。
-
 - code: <https://github.com/TakuM-M/hellow-jev>
 - jevbench: <https://github.com/dhruvmehra/jevbench>
