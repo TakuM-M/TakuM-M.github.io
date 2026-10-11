@@ -23,6 +23,12 @@ Images that must be served untouched (GIF, SVG, already-compressed files) go in
 Only these can be used with a raw `<img>` tag — `src/assets` paths are resolved
 by the image pipeline, which raw HTML does not go through.
 
+Charts and diagrams are written as code, not committed as SVG files. Each one is
+`src/figures/<post-id>/<name>.ts`, whose default export is an SVG string built
+with `src/lib/svg.ts` (and `src/lib/bar-chart.ts` for bar charts);
+`src/pages/images/[post]/[name].svg.ts` serves it at `/images/<post-id>/<name>.svg`.
+Files starting with `_` are shared helpers and are not emitted.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
